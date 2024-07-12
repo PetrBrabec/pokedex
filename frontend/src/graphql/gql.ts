@@ -14,7 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  query Pokemons($limit: Int!) {\n    pokemons(query: { limit: $limit, offset: 0 }) {\n      edges {\n        id\n        name\n      }\n    }\n  }\n": types.PokemonsDocument,
-    "\n  query Pokemon($id: ID!) {\n    pokemonById(id: $id) {\n      id\n      name\n      image\n    }\n  }\n": types.PokemonDocument,
+    "\n  query Pokemon($id: ID!) {\n    pokemonById(id: $id) {\n      id\n      name\n    }\n  }\n": types.PokemonDocument,
 };
 
 /**
@@ -38,7 +38,7 @@ export function gql(source: "\n  query Pokemons($limit: Int!) {\n    pokemons(qu
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n  query Pokemon($id: ID!) {\n    pokemonById(id: $id) {\n      id\n      name\n      image\n    }\n  }\n"): (typeof documents)["\n  query Pokemon($id: ID!) {\n    pokemonById(id: $id) {\n      id\n      name\n      image\n    }\n  }\n"];
+export function gql(source: "\n  query Pokemon($id: ID!) {\n    pokemonById(id: $id) {\n      id\n      name\n    }\n  }\n"): (typeof documents)["\n  query Pokemon($id: ID!) {\n    pokemonById(id: $id) {\n      id\n      name\n    }\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};

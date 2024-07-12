@@ -8,13 +8,12 @@ const PokemonQuery = gql(/* GraphQL */ `
     pokemonById(id: $id) {
       id
       name
-      image
     }
   }
 `)
 
 export default function IndexPage() {
-  const { pokemonId } = useParams<{ pokemonId: string }>()
+  const { pokemonId } = useParams<{ pokemonId: string }>() || {}
 
   const { loading, data } = useQuery(PokemonQuery, {
     variables: {
@@ -30,7 +29,7 @@ export default function IndexPage() {
           <Box>
             <Image
               width="100%"
-              src={data.pokemonById.image}
+              src={`https://www.pokemon.com/static-assets/content-assets/cms2/img/pokedex/full/${data.pokemonById.id}.png`}
               alt={data.pokemonById.name}
             />
           </Box>
