@@ -1,19 +1,18 @@
 import "@mantine/core/styles.css"
-import Head from "next/head"
+import "@mantine/notifications/styles.css"
+import { ApolloProvider } from "@apollo/client"
 import { MantineProvider } from "@mantine/core"
-import { theme } from "../../theme"
+import { Notifications } from "@mantine/notifications"
 import type { AppProps } from "next/app"
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client"
-
-const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
-  cache: new InMemoryCache(),
-})
+import Head from "next/head"
+import { theme } from "../../theme"
+import { client } from "../apolloClient"
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={client}>
       <MantineProvider theme={theme}>
+        <Notifications position="bottom-right" />
         <Head>
           <title>Pokedex</title>
           <meta

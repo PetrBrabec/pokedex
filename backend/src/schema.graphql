@@ -41,6 +41,8 @@ input PokemonsQueryInput {
 
 input PokemonFilterInput {
     type: String
+    weakness: String
+    resistance: String
     isFavorite: Boolean
 }
 

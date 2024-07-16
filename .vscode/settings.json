@@ -1,3 +1,6 @@
 {
-  "cSpell.words": ["Pokemons"]
+  "cSpell.words": ["Pokedex", "Pokemons"],
+  "editor.codeActionsOnSave": {
+    "source.organizeImports.biome": "explicit"
+  }
 }
