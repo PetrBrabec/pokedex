@@ -7,16 +7,15 @@ import {
   Center,
   Container,
   Group,
-  Image,
+  Indicator,
   Pagination,
   ScrollArea,
   Switch,
   Text,
   TextInput,
   rem,
-  useMantineTheme,
 } from "@mantine/core"
-import { useDisclosure, useMediaQuery } from "@mantine/hooks"
+import { useDisclosure, useLocalStorage } from "@mantine/hooks"
 import {
   IconBrandGitlab,
   IconFilter,
@@ -33,9 +32,11 @@ const ColorSchemeButton = dynamic(() => import("./ColorSchemeButton"), {
   ssr: false,
 })
 import { PokedexFiltersContext } from "../PokedexFiltersContext"
+import { useMobileView } from "../hooks/useMobileView"
 import type { PokemonType } from "../types/PokemonType"
-import styles from "./Pokedex.module.css"
 import { PokedexFilters } from "./PokedexFilters"
+import { PokedexTitle } from "./PokedexTitle"
+import { PokemonsList } from "./PokemonsList"
 
 const PokemonsQuery = gql(/* GraphQL */ `
   query Pokemons(
@@ -71,11 +72,11 @@ const PokemonsQuery = gql(/* GraphQL */ `
 export type PokedexView = "gallery" | "list"
 
 export function Pokedex() {
-  const theme = useMantineTheme()
-  const isDoubleHeader = useMediaQuery(
-    `(max-width: calc(${theme.breakpoints.xs} - 1px))`
-  )
-  const [view, setView] = useState<PokedexView>("gallery")
+  const isMobileView = useMobileView()
+  const [view, setView] = useLocalStorage<PokedexView>({
+    key: "pokedex-view",
+    defaultValue: "gallery",
+  })
   const [pokemonType, setPokemonType] = useState<PokemonType | null>(null)
   const [pokemonWeakness, setPokemonWeakness] = useState<PokemonType | null>(
     null
@@ -85,6 +86,14 @@ export function Pokedex() {
   const [search, setSearch] = useState("")
   const [filtersOpened, { open: openFilters, close: closeFilters }] =
     useDisclosure()
+
+  const isFilterActive = useMemo(
+    () =>
+      pokemonType !== null ||
+      pokemonWeakness !== null ||
+      pokemonResistance !== null,
+    [pokemonType, pokemonWeakness, pokemonResistance]
+  )
 
   const perPage = 24
   const [page, setPage] = useState(1)
@@ -156,24 +165,17 @@ export function Pokedex() {
       >
         <AppShell.Header>
           <Group
-            h={isDoubleHeader ? undefined : "100%"}
+            h={isMobileView ? undefined : "100%"}
             px="md"
-            justify={!isDoubleHeader ? "space-between" : "center"}
-            wrap={isDoubleHeader ? "wrap" : "nowrap"}
+            justify={!isMobileView ? "space-between" : "center"}
+            wrap={isMobileView ? "wrap" : "nowrap"}
             gap={0}
           >
             <Box py="xs">
-              <Anchor href="/" unstyled style={{ textDecoration: "none" }}>
-                <Group>
-                  <Image src="/favicon.svg" alt="Pokedex" height={40} />
-                  <Text className={styles.title} component="h2" fz="h2">
-                    Pokedex
-                  </Text>
-                </Group>
-              </Anchor>
+              <PokedexTitle />
             </Box>
 
-            <Group gap="sm" w={isDoubleHeader ? "100%" : undefined}>
+            <Group gap="sm" w={isMobileView ? "100%" : undefined}>
               <Switch
                 size="lg"
                 color="red"
@@ -184,7 +186,7 @@ export function Pokedex() {
               />
 
               <TextInput
-                flex={isDoubleHeader ? 1 : undefined}
+                flex={isMobileView ? 1 : undefined}
                 placeholder="Search"
                 value={search}
                 onChange={handleSearch}
@@ -196,16 +198,18 @@ export function Pokedex() {
                 }
                 radius="lg"
               />
-              <ActionIcon
-                onClick={openFilters}
-                size={rem(36)}
-                radius="lg"
-                variant="light"
-                disabled={filtersOpened}
-                color="gray"
-              >
-                <IconFilter />
-              </ActionIcon>
+              <Indicator disabled={!isFilterActive} offset={3} color="red">
+                <ActionIcon
+                  onClick={openFilters}
+                  size={rem(36)}
+                  radius="lg"
+                  variant="light"
+                  disabled={filtersOpened}
+                  color="gray"
+                >
+                  <IconFilter />
+                </ActionIcon>
+              </Indicator>
 
               <ColorSchemeButton />
             </Group>
@@ -227,12 +231,16 @@ export function Pokedex() {
             </Center>
           ) : (
             <Container
-              size="xl"
+              size={view === "list" ? "sm" : "xl"}
               py={{ base: "md", xs: "sm", sm: "md", lg: "xl" }}
               px={{ base: "lg", xs: "sm", lg: "xl" }}
             >
               {view === "list" ? (
-                <></>
+                <PokemonsList
+                  pokemons={data?.pokemons.edges}
+                  perPage={perPage}
+                  asideOpen={filtersOpened}
+                />
               ) : (
                 <PokemonsGallery
                   pokemons={data?.pokemons.edges}
@@ -266,6 +274,7 @@ export function Pokedex() {
               setPokemonResistance={setPokemonResistance}
             />
           </AppShell.Section>
+
           <AppShell.Section>
             <Group justify="space-between" align="center">
               <Text>
