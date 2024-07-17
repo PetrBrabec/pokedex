@@ -10,6 +10,7 @@ import { onError } from "@apollo/client/link/error"
 import { RetryLink } from "@apollo/client/link/retry"
 import { notifications } from "@mantine/notifications"
 import { IconCloudDataConnection } from "@tabler/icons-react"
+import { DOMAIN } from "../config"
 
 // Error handling link
 const errorLink = onError(({ graphQLErrors, networkError }) => {
@@ -46,7 +47,7 @@ const retryLink = new RetryLink({
   },
 })
 
-const httpLink = new HttpLink({ uri: "http://localhost:4000/graphql" })
+const httpLink = new HttpLink({ uri: `http://${DOMAIN}:4000/graphql` })
 
 export const client = new ApolloClient({
   link: ApolloLink.from([errorLink, retryLink, httpLink]),

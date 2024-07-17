@@ -20,3 +20,5 @@ export const PokemonsList: React.FC<{
     </Stack>
   )
 }
+
+export default PokemonsList

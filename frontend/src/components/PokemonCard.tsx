@@ -1,5 +1,6 @@
 import { Badge, Card, Group, Text } from "@mantine/core"
 import Link from "next/link"
+import { Path } from "../Path"
 import type { PokemonBase } from "../types/PokemonBase"
 import { type PokemonType, PokemonTypeColors } from "../types/PokemonType"
 import styles from "./PokemonCard.module.css"
@@ -13,7 +14,7 @@ export const PokemonCard: React.FC<PokemonBase> = ({
   types,
 }) => {
   return (
-    <Link href={`/${name.toLowerCase()}`} style={{ textDecoration: "unset" }}>
+    <Link href={Path.Pokemon(name)} style={{ textDecoration: "unset" }}>
       <Card
         shadow="xs"
         padding="lg"

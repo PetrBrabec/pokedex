@@ -1,0 +1,1 @@
+export const DOMAIN = "localhost" // set to your local ip to test on other devices

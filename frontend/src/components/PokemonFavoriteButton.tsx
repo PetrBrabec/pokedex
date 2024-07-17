@@ -2,9 +2,9 @@ import { useMutation } from "@apollo/client"
 import { ActionIcon, Anchor, Stack, Text } from "@mantine/core"
 import { notifications } from "@mantine/notifications"
 import { IconHeart, IconHeartFilled } from "@tabler/icons-react"
-import { useContext } from "react"
-import { PokedexFiltersContext } from "../PokedexFiltersContext"
+import { Path } from "../Path"
 import { gql } from "../graphql"
+import { usePokedexParams } from "../hooks/usePokedexParams"
 import type { PokemonBase } from "../types/PokemonBase"
 
 const PokemonFavoriteMutation = gql(/* GraphQL */ `
@@ -28,8 +28,6 @@ const PokemonUnFavoriteMutation = gql(/* GraphQL */ `
 export const PokemonFavoriteButton: React.FC<
   Pick<PokemonBase, "id" | "isFavorite">
 > = ({ id, isFavorite }) => {
-  const { enableFavoriteFilter } = useContext(PokedexFiltersContext)
-
   const [makeFavorite] = useMutation(PokemonFavoriteMutation, {
     refetchQueries: ["Pokemons", "Pokemon"],
     onCompleted(data) {
@@ -41,7 +39,7 @@ export const PokemonFavoriteButton: React.FC<
             <Text>
               <b>{data.favoritePokemon!.name}</b> is now your favorite.
             </Text>
-            <Anchor onClick={enableFavoriteFilter}>
+            <Anchor href={Path.Pokedex({ showFavorites: true })}>
               See all your favorite pokemons
             </Anchor>
           </Stack>

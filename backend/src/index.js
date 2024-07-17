@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const { ApolloServer } = require('apollo-server-express');
 const express = require('express');
+const cors = require('cors');
 const fs = require('fs');
 const _ = require('lodash');
 const pokemonsData = require('./pokemons');
@@ -12,6 +13,7 @@ const typeDefs = fs.readFileSync(`${__dirname}/schema.graphql`, 'utf-8');
 let favorites = new Map();
 
 const app = express();
+app.use(cors());
 app.get('/sounds/:id', (req, res) =>
 	res.sendFile(`${__dirname}/sounds/${req.params.id}.mp3`),
 );
@@ -96,10 +98,18 @@ const resolvers = {
 				.replace(' ', '-')}.jpg`,
 		sound: (pokemon) => `${BASE_URL}/sounds/${parseInt(pokemon.id, 10)}`,
 		evolutions: (pokemon) =>
-			_.map(pokemon.evolutions || [], (ev) => ({
-				...ev,
-				id: _.padStart(ev.id, 3, '0'),
-			})),
+			_.map(pokemon.evolutions || [], (ev) => {
+				const id = _.padStart(ev.id, 3, '0');
+				const evolutionPokemon = pokemonsData.find(
+					(pokemon) => pokemon.id === id,
+				);
+				if (!evolutionPokemon) throw Error('Pokemon evolution not found');
+				return {
+					...ev,
+					...evolutionPokemon,
+					id,
+				};
+			}),
 		isFavorite: (pokemon) => !!favorites.get(pokemon.id),
 	},
 	PokemonAttack: {

@@ -1,5 +1,6 @@
 import { Badge, Box, Card, Flex, Group, Text, rem } from "@mantine/core"
 import Link from "next/link"
+import { Path } from "../Path"
 import { useMobileView } from "../hooks/useMobileView"
 import type { PokemonBase } from "../types/PokemonBase"
 import { type PokemonType, PokemonTypeColors } from "../types/PokemonType"
@@ -18,7 +19,7 @@ export const PokemonListCard: React.FC<PokemonBase> = ({
   const isMobileView = useMobileView()
 
   return (
-    <Link href={`/${name.toLowerCase()}`} style={{ textDecoration: "none" }}>
+    <Link href={Path.Pokemon(name)} style={{ textDecoration: "none" }}>
       <Card p={0} withBorder shadow="xs" radius="lg" className={styles.card}>
         <Group pl="md" pr="md" py="xs" justify="center">
           <Box h={rem(pokemonImageSize)} w={rem(pokemonImageSize)}>

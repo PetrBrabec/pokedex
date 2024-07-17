@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Button,
   Group,
   Stack,
   Tabs,
@@ -7,34 +8,26 @@ import {
   useComputedColorScheme,
 } from "@mantine/core"
 import { IconList, IconPhoto, IconX } from "@tabler/icons-react"
-import { type PokemonType } from "../types/PokemonType"
-import type { PokedexView } from "./Pokedex"
+import { useCallback } from "react"
+import { type PokedexView, usePokedexParams } from "../hooks/usePokedexParams"
 import { PokemonTypeSelect } from "./PokemonTypeSelect"
 
 const iconStyle = { width: rem(18), height: rem(18) }
 
 export const PokedexFilters: React.FC<{
   closeFilters: () => void
-  view: PokedexView
-  setView: (view: PokedexView) => void
-  pokemonType: PokemonType | null
-  setPokemonType: (type: PokemonType | null) => void
-  pokemonWeakness: PokemonType | null
-  setPokemonWeakness: (type: PokemonType | null) => void
-  pokemonResistance: PokemonType | null
-  setPokemonResistance: (type: PokemonType | null) => void
-}> = ({
-  closeFilters,
-  view,
-  setView,
-  pokemonType,
-  setPokemonType,
-  pokemonWeakness,
-  setPokemonWeakness,
-  pokemonResistance,
-  setPokemonResistance,
-}) => {
+}> = ({ closeFilters }) => {
   const colorScheme = useComputedColorScheme()
+  const [
+    { type, weakness, resistance, view },
+    { setType, setWeakness, setResistance, setView, clear },
+  ] = usePokedexParams()
+
+  const handleClear = useCallback(() => {
+    clear()
+    closeFilters()
+  }, [clear, closeFilters])
+
   return (
     <>
       <Group align="center" mb="lg">
@@ -80,23 +73,31 @@ export const PokedexFilters: React.FC<{
         <PokemonTypeSelect
           label="Pokemon Type"
           placeholder="Pick a pokemon type"
-          value={pokemonType}
-          onChange={setPokemonType}
+          value={type || null}
+          onChange={setType}
         />
 
         <PokemonTypeSelect
           label="Pokemon Weakness"
           placeholder="Pick a pokemons weakness"
-          value={pokemonWeakness}
-          onChange={setPokemonWeakness}
+          value={weakness || null}
+          onChange={setWeakness}
         />
 
         <PokemonTypeSelect
           label="Pokemon Resistance"
           placeholder="Pick a type pokemon is resistant to"
-          value={pokemonResistance}
-          onChange={setPokemonResistance}
+          value={resistance || null}
+          onChange={setResistance}
         />
+
+        <Button variant="light" color="gray" onClick={handleClear} mt="lg">
+          Clear Filters
+        </Button>
+
+        <Button color="indigo" onClick={closeFilters}>
+          See Results
+        </Button>
       </Stack>
     </>
   )

@@ -35,3 +35,5 @@ export const PokemonsGallery: React.FC<{
     </SimpleGrid>
   )
 }
+
+export default PokemonsGallery

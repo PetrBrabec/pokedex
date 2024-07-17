@@ -1,8 +1,25 @@
-# Mantine Next Template
-[Template Repository](https://github.com/mantinedev/next-pages-min-template)
+# Running it locally
 
-# Deprecated Subdependencies
-There is 5 deprecated subdependencies found. I believe that this coding challenge is not about that, so I am not spending time on that.
+To run the server:
 
-# Running the frontend
-TODO
+```
+cd backend
+npm install
+npm start
+```
+
+
+To run the client:
+
+```
+cd frontend
+pnpm install
+pnpm dev
+```
+
+
+When making changes to the client you also need to be generating graphql types using:
+
+```
+pnpm graphql:watch
+```
