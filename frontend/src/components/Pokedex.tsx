@@ -10,7 +10,7 @@ import {
   Text,
   rem,
 } from "@mantine/core"
-import { useDisclosure } from "@mantine/hooks"
+import { useDebouncedValue, useDisclosure } from "@mantine/hooks"
 import { IconBrandGitlab } from "@tabler/icons-react"
 import dynamic from "next/dynamic"
 import { useCallback, useMemo } from "react"
@@ -64,11 +64,9 @@ const PokemonsQuery = gql(/* GraphQL */ `
 const perPage = 24
 
 export function Pokedex() {
-  const [
-    { showFavorites, search, type, weakness, resistance, page, view },
-    { setPage },
-    isReady,
-  ] = usePokedexParams()
+  const [params, { setPage }, isReady] = usePokedexParams()
+
+  const { showFavorites, page, view } = params
 
   const [filtersOpened, { open: openFilters, close: closeFilters }] =
     useDisclosure()
@@ -81,16 +79,23 @@ export function Pokedex() {
     [setPage]
   )
 
+  const [debouncedParams] = useDebouncedValue(params, 300) // this prevents the query from being called too often
+
   const { data, previousData, loading } = useQuery(PokemonsQuery, {
     variables: {
       limit: perPage,
-      offset: (page - 1) * perPage,
-      isFavorite: showFavorites ? true : null,
-      search: search.trim().length > 0 ? search : null,
-      type: type,
-      weakness: weakness,
-      resistance: resistance,
+      offset: (debouncedParams.page - 1) * perPage,
+      isFavorite: debouncedParams.showFavorites ? true : null,
+      search:
+        debouncedParams.search.trim().length > 0
+          ? debouncedParams.search
+          : null,
+      type: debouncedParams.type,
+      weakness: debouncedParams.weakness,
+      resistance: debouncedParams.resistance,
     },
+    skip: !isReady,
+    fetchPolicy: "no-cache", // quick way to prevent favorites page to show outdated data; better would be counting changes done to favorites and invalidating cache based on that
   })
 
   const totalPages = useMemo(

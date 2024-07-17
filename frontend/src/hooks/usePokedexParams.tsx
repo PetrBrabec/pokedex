@@ -80,7 +80,15 @@ export const usePokedexParams = (): [
       type: rawQuery.type as PokemonType,
       weakness: rawQuery.weakness as PokemonType,
     }),
-    [rawQuery]
+    [
+      rawQuery.search,
+      rawQuery.page,
+      rawQuery.view,
+      rawQuery.showFavorites,
+      rawQuery.resistance,
+      rawQuery.type,
+      rawQuery.weakness,
+    ]
   )
 
   const setRawParams = useCallback(
