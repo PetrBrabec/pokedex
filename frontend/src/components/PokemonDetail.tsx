@@ -15,12 +15,14 @@ import {
   rem,
 } from "@mantine/core"
 import dynamic from "next/dynamic"
+import Head from "next/head"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import React from "react"
 import { Path } from "../Path"
 import { PokemonStaticData } from "../PokemonStaticData"
 import { gql } from "../graphql"
+import { title } from "../seo"
 import { type PokemonType, PokemonTypeColors } from "../types/PokemonType"
 import { PokedexTitle } from "./PokedexTitle"
 import { PokemonCard } from "./PokemonCard"
@@ -73,6 +75,14 @@ export const PokemonDetail = () => {
         height: 60,
       }}
     >
+      {pokemon && (
+        <Head>
+          <title>
+            {pokemon.name} | {title}
+          </title>
+        </Head>
+      )}
+
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between" wrap="nowrap">
           <PokedexTitle />
@@ -165,7 +175,9 @@ export const PokemonDetail = () => {
                 <Divider />
 
                 <Container py="xl">
-                  <Title ta="center">Evolutions</Title>
+                  <Title ta="center" order={2}>
+                    Evolutions
+                  </Title>
 
                   <Group mt="md" gap="md" justify="center">
                     {pokemon.evolutions.map((evolution) => (

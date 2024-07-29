@@ -8,9 +8,7 @@ import Head from "next/head"
 import { DOMAIN } from "../../config"
 import { theme } from "../../theme"
 import { client } from "../apolloClient"
-
-const title = "Pokedex by Petr Brabec"
-const description = "Browse pokemons like never before!"
+import { description, title } from "../seo"
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
