@@ -2,18 +2,22 @@ import { useQuery } from "@apollo/client"
 import {
   Anchor,
   AppShell,
+  Box,
   Center,
   Container,
   Group,
   Pagination,
   ScrollArea,
+  Stack,
   Text,
   rem,
 } from "@mantine/core"
 import { useDebouncedValue, useDisclosure } from "@mantine/hooks"
 import { IconBrandGitlab } from "@tabler/icons-react"
 import dynamic from "next/dynamic"
+import Link from "next/link"
 import { useCallback, useMemo } from "react"
+import { Path } from "../Path"
 import { gql } from "../graphql"
 import { usePokedexParams } from "../hooks/usePokedexParams"
 import { PokedexFilters } from "./PokedexFilters"
@@ -64,7 +68,8 @@ const PokemonsQuery = gql(/* GraphQL */ `
 const perPage = 24
 
 export function Pokedex() {
-  const [params, { setPage }, isReady] = usePokedexParams()
+  const [params, { setPage, isFilterActive, isSearchActive }, isReady] =
+    usePokedexParams()
 
   const { showFavorites, page, view } = params
 
@@ -134,15 +139,29 @@ export function Pokedex() {
       <AppShell.Main>
         {pokemons?.length === 0 ? (
           <Center my="xl">
-            <Text>
-              No pokemons found{" "}
-              {showFavorites && (
-                <>
-                  {" "}
-                  in your <b>favorites list</b>
-                </>
+            <Stack align="center">
+              <Text>
+                No pokemons found{" "}
+                {showFavorites && (
+                  <>
+                    {" "}
+                    in your <b>favorites list</b>
+                  </>
+                )}
+              </Text>
+              {(isFilterActive || isSearchActive) && (
+                <Box>
+                  <Link
+                    href={Path.Pokedex({
+                      showFavorites,
+                    })}
+                    style={{ textDecoration: "none" }}
+                  >
+                    Clear filters
+                  </Link>
+                </Box>
               )}
-            </Text>
+            </Stack>
           </Center>
         ) : (
           <Container

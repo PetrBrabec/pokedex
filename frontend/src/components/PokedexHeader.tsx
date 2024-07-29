@@ -17,10 +17,8 @@ export const PokedexHeader: React.FC<{
   onFiltersOpen: () => void
   filtersOpened: boolean
 }> = ({ onFiltersOpen, filtersOpened }) => {
-  const [
-    { showFavorites, type, weakness, resistance, page, view },
-    { setShowFavorites, setPage },
-  ] = usePokedexParams()
+  const [{ showFavorites }, { setShowFavorites, setPage, isFilterActive }] =
+    usePokedexParams()
 
   const handleToggleFavorites = useCallback(() => {
     setPage(1)
@@ -28,11 +26,6 @@ export const PokedexHeader: React.FC<{
   }, [showFavorites, setShowFavorites, setPage])
 
   const isMobileView = useMobileView()
-
-  const isFilterActive = useMemo(
-    () => type != null || weakness != null || resistance != null,
-    [type, weakness, resistance]
-  )
 
   return (
     <Group

@@ -63,6 +63,9 @@ export const usePokedexParams = (): [
     setPage: (page: number) => void
     setView: (view: PokedexView) => void
     clear: () => void
+
+    isFilterActive: boolean
+    isSearchActive: boolean
   },
   boolean
 ] => {
@@ -150,6 +153,19 @@ export const usePokedexParams = (): [
     [setParams, params]
   )
 
+  const isFilterActive = useMemo(
+    () =>
+      params.type != null ||
+      params.weakness != null ||
+      params.resistance != null,
+    [params.type, params.weakness, params.resistance]
+  )
+
+  const isSearchActive = useMemo(
+    () => params.search.trim().length > 0,
+    [params.search]
+  )
+
   const clear = useCallback(() => {
     setParams({
       ...params,
@@ -174,6 +190,8 @@ export const usePokedexParams = (): [
       setPage,
       setView,
       clear,
+      isFilterActive,
+      isSearchActive,
     },
     router.isReady,
   ]
