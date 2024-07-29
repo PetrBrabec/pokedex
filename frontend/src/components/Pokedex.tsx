@@ -79,7 +79,9 @@ export function Pokedex() {
     [setPage]
   )
 
-  const [debouncedParams] = useDebouncedValue(params, 300) // this prevents the query from being called too often
+  // this prevents the query from being called too often
+  const [debouncedParams] = useDebouncedValue(params, 300)
+  const [debouncedIsReady] = useDebouncedValue(isReady, 300)
 
   const { data, previousData, loading } = useQuery(PokemonsQuery, {
     variables: {
@@ -94,7 +96,7 @@ export function Pokedex() {
       weakness: debouncedParams.weakness,
       resistance: debouncedParams.resistance,
     },
-    skip: !isReady,
+    skip: !debouncedIsReady,
     fetchPolicy: "no-cache", // quick way to prevent favorites page to show outdated data; better would be counting changes done to favorites and invalidating cache based on that
   })
 
