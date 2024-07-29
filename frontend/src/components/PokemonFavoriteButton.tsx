@@ -2,6 +2,7 @@ import { useMutation } from "@apollo/client"
 import { ActionIcon, Anchor, Stack, Text } from "@mantine/core"
 import { notifications } from "@mantine/notifications"
 import { IconHeart, IconHeartFilled } from "@tabler/icons-react"
+import Link from "next/link"
 import { Path } from "../Path"
 import { gql } from "../graphql"
 import { usePokedexParams } from "../hooks/usePokedexParams"
@@ -39,9 +40,9 @@ export const PokemonFavoriteButton: React.FC<
             <Text>
               <b>{data.favoritePokemon!.name}</b> is now your favorite.
             </Text>
-            <Anchor href={Path.Pokedex({ showFavorites: true })}>
+            <Link href={Path.Pokedex({ showFavorites: true })}>
               See all your favorite pokemons
-            </Anchor>
+            </Link>
           </Stack>
         ),
       })
